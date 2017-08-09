@@ -7,74 +7,7 @@ import IfHandler from './handler/if'
 import RepeatHandler from './handler/repeat'
 import TextHandler from './handler/text'
 import WithHandler from './handler/with'
-
-const REGEX_VAR = /{([a-zA-Z0-9]*)}/g
-
-
-// function parseExpression(str) {
-//   return new (Function.bind(Function, 'data', `return \`${str}\``))
-// }
-
-function parseExpression(str, argNames) {
-  if (!str) {
-    return null
-  }
-
-  const ix = str.indexOf('${')
-  if (ix === -1) {
-    return null
-  }
-
-  // whole expression is JavaScript
-  if (ix === 0 && str.indexOf('${', ix + 1) === -1 && str[str.length - 1] === '}') {
-    return Reflect.construct(Function, argNames.concat(`return ${str.substr(2, str.length - 3)}`))
-  } else {
-    return Reflect.construct(Function, argNames.concat(`return \`${str}\``))
-  }
-
-
-  // return
-
-  // const parts = []
-  // let pos = 0
-
-  // let match
-  // while (match = REGEX_VAR.exec(str)) {
-  //   if (match.index > pos) {
-  //     parts.push(str.slice(pos, match.index))
-  //   }
-  //   parts.push({ key: match[1] })
-  //   pos = match.index + match[0].length
-  // }
-
-  // if (parts.length === 0) {
-  //   return null
-  // }
-
-  // if (pos <= str.length - 1) {
-  //   parts.push(str.slice(pos))
-  // }
-
-  // return function(data) {
-  //   if (parts.length === 1) {
-  //     const part = parts[0]
-  //     return part.key === '' ? data : data[part.key]
-  //   } else {
-  //     let result = ''
-  //     for (const part of parts) {
-  //       if (typeof part === 'string') {
-  //         result += part
-  //       } else {
-  //         const value = part.key === '' ? data : data[part.key]
-  //         if (value !== undefined && value !== null) {
-  //           result += value
-  //         }
-  //       }
-  //     }
-  //     return result
-  //   }
-  // }
-}
+import {parseExpression, processTemplate} from './utils'
 
 function traverseElement(el, argNames) {
   for (let child = el.firstChild; child; child = child.nextSibling) {
@@ -82,7 +15,7 @@ function traverseElement(el, argNames) {
     case Node.ELEMENT_NODE:
       // <template>
       if (child && child.localName === 'template') {
-        polyfillTemplate(child)
+        processTemplate(child)
 
         // <template repeat="...">
         if (child.hasAttribute('repeat')) {
@@ -171,22 +104,6 @@ function traverseElement(el, argNames) {
 }
 
 export default function parseTemplate(template) {
-  polyfillTemplate(template)
+  processTemplate(template)
   traverseElement(template.content, ['locals'])
-}
-
-
-function polyfillTemplate(template) {
-  if (template.content) {
-    return
-  }
-
-  const content = template.childNodes
-  const fragment = document.createDocumentFragment()
-
-  while (content[0]) {
-    fragment.appendChild(content[0])
-  }
-
-  template.content = fragment
 }
