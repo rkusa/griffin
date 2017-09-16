@@ -40,9 +40,9 @@ export default class RepeatHandler {
       } else {
         // update
         const dataLastIndex = array.length - 1
-        for (let i = offset, len = parent.childNodes.length; i < len; ++i) {
-          let el = parent.childNodes[i]
-
+        let el = parent.childNodes[offset]
+        let from = el
+        while (el) {
           if (dataOffset > dataLastIndex) {
             while (el && el !== endComment) {
               const del = el
@@ -54,14 +54,18 @@ export default class RepeatHandler {
           }
 
           if (el === endComment || el.nodeType === Node.COMMENT_NODE && el.textContent === '~~~') {
-            // debugger
-            yield* updateNode(parent, data.concat(array[dataOffset++]), parent, component, offset, i)
-            offset = i + 1
+            yield* updateNode(parent, data.concat(array[dataOffset++]), parent, component,
+              from, // from
+              el // to
+            )
+            from = el.nextSibling
           }
 
           if (el === endComment) {
             break
           }
+
+          el = el.nextSibling
         }
       }
     }

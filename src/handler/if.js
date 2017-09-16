@@ -38,13 +38,14 @@ export default class IfHandler {
         const clone = importNodeWithData(this.template.content, data, component)
         parent.insertBefore(clone, endComment)
       } else {
-        for (let i = offset, len = parent.childNodes.length; i < len; ++i) {
-          let el = parent.childNodes[i]
-
+        let el = parent.childNodes[offset]
+        while (el) {
           if (el === endComment) {
-            yield* updateNode(parent, data, parent, component, offset, i)
+            yield* updateNode(parent, data, parent, component, parent.childNodes[offset], el)
             break
           }
+
+          el = el.nextSibling
         }
       }
     } else {

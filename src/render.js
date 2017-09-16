@@ -17,31 +17,30 @@ export function* updateNode(node, data, parent, component, from, to) {
   }
 
   if (node.childNodes.length) {
-    const len = from || to ? to - from : node.childNodes.length
-    const offset = from || 0
+    let child = from || node.firstChild
     let skipping = 0
-    for (let i = 0; i < len; ++i) {
-      const child = node.childNodes[i + offset]
-      if (!child) {
-        break
-      }
-
+    while (child && child !== to) {
       if (child.nodeType === Node.COMMENT_NODE) {
         switch (child.textContent) {
         case '~{':
           skipping++
+          child = child.nextSibling
           continue
         case '}~':
           skipping--
+          child = child.nextSibling
           continue
         }
       }
 
       if (skipping > 0) {
+        child = child.nextSibling
         continue
       }
 
       yield* updateNode(child, data, node, component)
+
+      child = child.nextSibling
     }
   }
 }

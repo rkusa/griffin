@@ -25,7 +25,7 @@ export function parseExpression(str, argNames) {
       if (match.index > pos) {
         code += str.slice(pos, match.index).replace(/\\'/g, "\\'").replace(/\n/g, '\\n')
       }
-      code += `' + ${match[1]} + '`
+      code += `' + (${match[1]}) + '`
       pos = match.index + match[0].length
     }
 
@@ -40,18 +40,9 @@ export function parseExpression(str, argNames) {
 }
 
 export function processTemplate(template) {
-  console.log(template.getAttribute('repeat'), template.getAttribute('as'))
-
-  // if (template.content) {
-  //   return
-  // }
-
-  // const templates = template.getElementsByTagName('template')
-  // for (let i = templates.length - 1; i >= 0; --i) {
-  //   if (templates[i]) {
-  //     processTemplate(templates[i])
-  //   }
-  // }
+  if (template.content) {
+    return
+  }
 
   const content = template.childNodes
   const fragment = document.createDocumentFragment()

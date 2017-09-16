@@ -28,6 +28,7 @@ function traverseElement(el, argNames) {
 
           child.removeAttribute('repeat')
           child.removeAttribute('as')
+          child.dataset.griffin = 'repeat'
         }
         // <template if="...">
         else if (child.hasAttribute('if')) {
@@ -38,8 +39,9 @@ function traverseElement(el, argNames) {
           addHandler(child, handler)
 
           child.removeAttribute('if')
+          child.dataset.griffin = 'if'
         }
-        // <template if="...">
+        // <template with="...">
         else if (child.hasAttribute('with')) {
           const alias = child.getAttribute('as') || 'item'
           const fn = parseExpression(child.getAttribute('with'), argNames)
@@ -50,9 +52,34 @@ function traverseElement(el, argNames) {
 
           child.removeAttribute('with')
           child.removeAttribute('as')
+          child.dataset.griffin = 'with'
         }
 
         break
+      }
+
+      // allow repeat for non-template elements (IE fallback)
+      // TODO: hide behind option?
+      if (child && child.localName === 'optgroup') {
+        // <* repeat="...">
+        if (child.hasAttribute('repeat')) {
+          const itemName = child.getAttribute('as') || 'item'
+          const fn = parseExpression(child.getAttribute('repeat'), argNames)
+
+          const fragment = document.createDocumentFragment()
+          while (child.childNodes[0]) {
+            fragment.appendChild(child.childNodes[0])
+          }
+          traverseElement(fragment, argNames.concat(itemName))
+
+          const handler = new RepeatHandler(fn, { content: fragment })
+          // const comment = document.createComment('repeat')
+          addHandler(child, handler)
+          // child.appendChild(comment)
+
+          child.removeAttribute('repeat')
+          child.removeAttribute('as')
+        }
       }
 
       // attributes

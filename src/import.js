@@ -14,10 +14,10 @@ function* executeCallbacks(node, parent, data, component) {
 }
 
 export default function importNodeWithData(node, data, component) {
-  if (node && node.localName === 'template' && (node.hasAttribute('repeat') || node.hasAttribute('if'))) {
-    const comment = node.hasAttribute('repeat') ? '~repeat~' : '~if~'
-    return document.createComment(comment)
-  }
+  // TODO: this leads to Out of stack error (in IE)
+  // if (node && node.localName === 'template' && node.dataset.griffin) {
+  //   return document.createComment(node.dataset.griffin)
+  // }
 
   const clone = document.importNode(node, false)
 
