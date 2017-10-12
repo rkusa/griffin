@@ -1,5 +1,6 @@
 export {
-  parseTemplate
+  parseTemplate,
+  upgrade
 } from './parse'
 // import parseTemplate from './parse'
 // window.parseTemplate = parseTemplate
@@ -21,4 +22,7 @@ export function renderTemplate(component) {
 // }
 // window.updateNode = updateNode
 
-
+export function update(node, self, data) {
+  for (const _ of updateNode(node, [data], undefined, self)) {
+  }
+}

@@ -130,7 +130,11 @@ function traverseElement(el, argNames) {
   }
 }
 
-export default function parseTemplate(template) {
+export function parseTemplate(template) {
   processTemplate(template)
   traverseElement(template.content, ['locals'])
+}
+
+export function upgrade(node) {
+  traverseElement(node, ['locals'])
 }
