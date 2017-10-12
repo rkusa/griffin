@@ -53,3 +53,12 @@ export function processTemplate(template) {
 
   template.content = fragment
 }
+
+export function insertAfter(newEl, afterEl) {
+  const parent = afterEl.parentNode
+  if (parent.lastChild === afterEl) {
+    parent.appendChild(newEl)
+  } else {
+    parent.insertBefore(newEl, afterEl.nextSibling)
+  }
+}

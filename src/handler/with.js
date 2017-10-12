@@ -1,6 +1,7 @@
 import {START_COMMENT, END_COMMENT} from '../constants'
 import {updateNode} from '../render'
 import importNodeWithData from '../import'
+import {insertAfter} from '../utils'
 
 export default class WithHandler {
   constructor(fn, template) {
@@ -15,9 +16,9 @@ export default class WithHandler {
     let offset = 0
 
     if (!startComment.parentNode) {
-      parent.appendChild(startComment)
+      insertAfter(endComment, node)
       offset = parent.childNodes.length
-      parent.appendChild(endComment)
+      insertAfter(startComment, node)
     } else {
       for (const len = parent.childNodes.length; offset < len; ++offset) {
         if (parent.childNodes[offset] === startComment) {

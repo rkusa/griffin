@@ -19,3 +19,12 @@ export function parseExpression(str, argNames) {
 export function processTemplate(template) {
   // noop
 }
+
+export function insertAfter(newEl, afterEl) {
+  const parent = afterEl.parentNode
+  if (parent.lastChild === afterEl) {
+    parent.appendChild(newEl)
+  } else {
+    parent.insertBefore(newEl, afterEl.nextSibling)
+  }
+}
