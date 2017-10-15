@@ -6,8 +6,9 @@ import EventAttributeHandler from './handler/event-attribute'
 import IfHandler from './handler/if'
 import RepeatHandler from './handler/repeat'
 import TextHandler from './handler/text'
+import HtmlHandler from './handler/html'
 import WithHandler from './handler/with'
-import {parseExpression, processTemplate} from './utils'
+import {parseExpression, parseRawExpression, processTemplate} from './utils'
 
 function traverseElement(el, argNames) {
   for (let child = el.firstChild; child; child = child.nextSibling) {
@@ -114,13 +115,20 @@ function traverseElement(el, argNames) {
 
       // traverse child recursively
       traverseElement(child, argNames)
+      child.removeAttribute('raw')
 
       break
     case Node.TEXT_NODE:
       const fn = parseExpression(child.textContent, argNames)
       if (fn) {
-        const handler = new TextHandler(fn)
-        addHandler(child, handler)
+        child.textContent = ''
+        if (el.hasAttribute && el.hasAttribute('raw')) {
+          const handler = new HtmlHandler(fn)
+          addHandler(child, handler)
+        } else {
+          const handler = new TextHandler(fn)
+          addHandler(child, handler)
+        }
       }
 
       break
