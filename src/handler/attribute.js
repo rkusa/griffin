@@ -3,7 +3,13 @@ import {PREVIOUS_VALUE} from '../constants'
 export default class AttributeHandler {
   constructor(fn, name) {
     this.fn = fn
-    this.name = name
+    switch (name) {
+    case 'class':
+      this.name = 'className'
+      break
+    default:
+      this.name = name
+    }
   }
 
   *update(node, data, _, component) {
@@ -18,8 +24,14 @@ export default class AttributeHandler {
     } else if (typeof value === 'object') {
       this.executeCallback(node, data)
     } else {
-      if (node.getAttribute(this.name) !== value) {
-        node.setAttribute(this.name, value)
+      if (this.name in node) {
+        if (node[this.name] !== value) {
+          node[this.name] = value
+        }
+      } else {
+        if (node.getAttribute(this.name) !== value) {
+          node.setAttribute(this.name, value)
+        }
       }
     }
 
