@@ -121,14 +121,16 @@ function traverseElement(el, argNames) {
     case Node.TEXT_NODE:
       const fn = parseExpression(child.textContent, argNames)
       if (fn) {
-        child.textContent = ''
         if (el.hasAttribute && el.hasAttribute('raw')) {
           const handler = new HtmlHandler(fn)
-          addHandler(child, handler)
+          el.insertBefore(handler.anchor, child)
+          addHandler(handler.anchor, handler)
         } else {
           const handler = new TextHandler(fn)
-          addHandler(child, handler)
+          addHandler(el.childNodes.length === 1 ? el : child, handler)
         }
+
+        child.textContent = ''
       }
 
       break
@@ -138,11 +140,16 @@ function traverseElement(el, argNames) {
   }
 }
 
+// TODO: to be removed
 export function parseTemplate(template) {
-  processTemplate(template)
-  traverseElement(template.content, ['locals'])
+  upgrade(template)
 }
 
-export function upgrade(node) {
-  traverseElement(node, ['locals'])
+export function upgrade(node, opts) {
+  if (node.localName === 'template') {
+    processTemplate(template)
+    node = template.content
+  }
+  const rootName = opts && opts.rootName || 'locals'
+  traverseElement(node, [rootName])
 }

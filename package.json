@@ -11,5 +11,6 @@
   },
   "scripts": {
     "dev": "./node_modules/.bin/webpack src/index.js dist/bundle.js --output-library-target commonjs --watch"
-  }
+  },
+  "main": "src/index.js"
 }

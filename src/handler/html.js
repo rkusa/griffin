@@ -4,6 +4,8 @@ import {insertAfter} from '../utils'
 export default class HtmlHandler {
   constructor(fn) {
     this.fn = fn
+    // required for IE12
+    this.anchor = document.createComment('#')
   }
 
   *update(node, data, parent, component) {
