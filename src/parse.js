@@ -8,7 +8,7 @@ import RepeatHandler from './handler/repeat'
 import TextHandler from './handler/text'
 import HtmlHandler from './handler/html'
 import WithHandler from './handler/with'
-import {parseExpression, parseRawExpression, processTemplate} from './utils'
+import {parseExpression, processTemplate} from './utils'
 
 function traverseElement(el, argNames) {
   for (let child = el.firstChild; child; child = child.nextSibling) {

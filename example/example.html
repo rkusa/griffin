@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<head>
+  <title>Demo</title>
+</head>
+
+<body>
+  <script src="bundle.js"></script>
+
+  <template>
+    <ul>
+      <template repeat="${locals.products}" as="product">
+        <li>
+          <label>
+            <input type="checkbox" checked="${product.selected}" on-change="e => this.select(product, e.target.checked)">
+            ${product.data.name} ${product.data.price}€
+          </label>
+        </li>
+      </template>
+      <li>Total: ${this.total(locals.products)}€</li>
+    </ul>
+  </template>
+
+  <script>
+  'use strict'
+  const template = document.querySelector('template')
+  griffin.parseTemplate(template)
+
+  let state = {
+    products: [
+      {
+        selected: false,
+        data: {
+          name: "AAAAAAAA",
+          price: 10,
+        },
+      },
+      {
+        selected: false,
+        data: {
+          name: "BBBBBBBBB",
+          price: 20,
+        },
+      },
+    ],
+  }
+
+  const fns = {
+    select(product, selected) {
+      product.selected = selected
+      rerender()
+    },
+
+    total(products) {
+      let total = 0
+      console.log(products)
+      for (const product of products) {
+        if (product.selected) {
+          total += product.data.price
+        }
+      }
+      return total
+    }
+  }
+
+  const node = griffin.importNodeWithData(template.content, [state], fns)
+  document.body.appendChild(node)
+
+  function rerender() {
+    griffin.update(document.body, fns, state)
+  }
+
+  </script>
+</body>

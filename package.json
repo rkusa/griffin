@@ -3,14 +3,10 @@
   "version": "1.0.0",
   "dependencies": {},
   "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-env": "^1.6.0",
-    "webpack": "^3.3.0"
+    "rollup": "^0.50.0"
   },
   "scripts": {
-    "dev": "./node_modules/.bin/webpack src/index.js dist/bundle.js --output-library-target commonjs --watch"
+    "build": "rollup src/index.js -o example/bundle.js -f iife -n griffin"
   },
   "main": "src/index.js"
 }

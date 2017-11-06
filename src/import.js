@@ -30,7 +30,7 @@ export default function importNodeWithData(node, data, component) {
     if (handlers.has(child)) {
       handlers.set(newChild, handlers.get(child))
       const gen = executeCallbacks(newChild, clone, data, component)
-      for (const _ of gen) {}
+      while (!gen.next().done) {}
     }
   }
 
