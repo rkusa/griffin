@@ -147,8 +147,8 @@ export function parseTemplate(template) {
 
 export function upgrade(node, opts) {
   if (node.localName === 'template') {
-    processTemplate(template)
-    node = template.content
+    processTemplate(node)
+    node = node.content
   }
   const rootName = opts && opts.rootName || 'locals'
   traverseElement(node, [rootName])

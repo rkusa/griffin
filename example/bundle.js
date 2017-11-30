@@ -602,7 +602,7 @@ function parseTemplate(template) {
 
 function upgrade(node, opts) {
   if (node.localName === 'template') {
-    node = template.content;
+    node = node.content;
   }
   const rootName = opts && opts.rootName || 'locals';
   traverseElement(node, [rootName]);
