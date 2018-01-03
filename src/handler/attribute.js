@@ -19,15 +19,17 @@ export default class AttributeHandler {
       if (typeof node[PREVIOUS_VALUE] === 'object') {
         this.executeCallback(node, data)
       } else {
-        node.removeAttribute(this.name)
+        if (this.name in node) {
+          node[this.name] = null
+        } else {
+          node.removeAttribute(this.name)
+        }
       }
     } else if (typeof value === 'object') {
       this.executeCallback(node, data)
     } else {
       if (this.name in node) {
-        if (node[this.name] !== value) {
-          node[this.name] = value
-        }
+        node[this.name] = value
       } else {
         if (node.getAttribute(this.name) !== value) {
           node.setAttribute(this.name, value)
